@@ -1,0 +1,42 @@
+﻿version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: finance_user
+      POSTGRES_PASSWORD: finance_pass
+      POSTGRES_DB: finance_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: .
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://finance_user:finance_pass@db:5432/finance_db
+      SECRET_KEY: ${SECRET_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      LLM_MODEL: gpt-4o-mini
+      ENV: production
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./outputs:/app/outputs
+
+  frontend:
+    build: ./frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  pgdata:

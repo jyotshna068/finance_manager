@@ -1,0 +1,14 @@
+﻿.env
+frontend/.env
+venv/
+__pycache__/
+*.pyc
+uploads/
+outputs/
+test.db
+node_modules/
+frontend/node_modules/
+frontend/dist/
+.pytest_cache/
+*.egg-info/
+finance.db
